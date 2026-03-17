@@ -74,4 +74,24 @@ public class ConfigManager {
     public boolean isDebugEnabled() {
         return config.getBoolean("debug.enabled", false);
     }
+
+    /** 벤/언벤 시 서버 전체 알림 여부를 반환한다 */
+    public boolean isBanBroadcast() {
+        return config.getBoolean("ban.broadcast", true);
+    }
+
+    /** 벤 DB 로그 기록 여부를 반환한다 */
+    public boolean isBanLogToDb() {
+        return config.getBoolean("ban.log-to-db", true);
+    }
+
+    /** 킥 시 서버 전체 알림 여부를 반환한다 */
+    public boolean isKickBroadcast() {
+        return config.getBoolean("kick.broadcast", true);
+    }
+
+    /** 뮤트 시 서버 전체 알림 여부를 반환한다 */
+    public boolean isMuteBroadcast() {
+        return config.getBoolean("chat.mute-broadcast", true);
+    }
 }

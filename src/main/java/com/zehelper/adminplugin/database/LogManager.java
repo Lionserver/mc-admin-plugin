@@ -1,5 +1,8 @@
 package com.zehelper.adminplugin.database;
 
+import com.zehelper.adminplugin.AdminPlugin;
+import com.zehelper.adminplugin.util.AsyncDBUtil;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -26,22 +29,24 @@ public class LogManager {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            AdminPlugin.getInstance().getLogger().severe("로그 테이블 생성 실패: " + e.getMessage());
         }
     }
 
-    /** 로그를 기록한다 */
+    /** 로그를 비동기로 기록한다 */
     public void log(String playerUuid, String playerName, String action, String detail) {
-        String sql = "INSERT INTO " + databaseManager.getTablePrefix() + "logs (player_uuid, player_name, action, detail) VALUES (?, ?, ?, ?)";
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, playerUuid);
-            ps.setString(2, playerName);
-            ps.setString(3, action);
-            ps.setString(4, detail);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String sql = "INSERT INTO " + databaseManager.getTablePrefix()
+                + "logs (player_uuid, player_name, action, detail) VALUES (?, ?, ?, ?)";
+
+        AsyncDBUtil.executeAsync(sql, ps -> {
+            try {
+                ps.setString(1, playerUuid);
+                ps.setString(2, playerName);
+                ps.setString(3, action);
+                ps.setString(4, detail);
+            } catch (Exception e) {
+                AdminPlugin.getInstance().getLogger().severe("로그 기록 실패: " + e.getMessage());
+            }
+        });
     }
 }

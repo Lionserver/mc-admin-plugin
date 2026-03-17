@@ -19,6 +19,19 @@ redis:
   port: 6379                 # Redis 포트
   password: ""               # Redis 비밀번호
 
+# === 벤 설정 ===
+ban:
+  broadcast: true            # 벤/언벤 시 서버 전체 알림
+  log-to-db: true            # DB에 로그 기록
+
+# === 킥 설정 ===
+kick:
+  broadcast: true            # 킥 시 서버 전체 알림
+
+# === 채팅 설정 ===
+chat:
+  mute-broadcast: true       # 뮤트 시 서버 전체 알림
+
 # 디버그 설정
 debug:
   enabled: false             # 디버그 모드 활성화 여부

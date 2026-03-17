@@ -6,6 +6,7 @@ import com.zehelper.adminplugin.AdminPlugin;
 import com.zehelper.adminplugin.config.ConfigManager;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseManager {
@@ -42,7 +43,54 @@ public class DatabaseManager {
 
     /** 필요한 테이블을 생성한다 */
     private void createTables() {
-        // 프로젝트별 테이블 생성은 기능 개발 시 추가
+        createBansTable();
+        createMutesTable();
+    }
+
+    /** 벤(차단) 테이블을 생성한다 */
+    private void createBansTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "bans ("
+                + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                + "player_uuid VARCHAR(36) NOT NULL, "
+                + "player_name VARCHAR(16) NOT NULL, "
+                + "reason TEXT NOT NULL, "
+                + "banned_by VARCHAR(16) NOT NULL, "
+                + "expires_at TIMESTAMP NULL, "
+                + "active TINYINT(1) DEFAULT 1, "
+                + "unbanned_by VARCHAR(16) NULL, "
+                + "unbanned_at TIMESTAMP NULL, "
+                + "INDEX idx_player_uuid (player_uuid), "
+                + "INDEX idx_active (active)"
+                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception e) {
+            plugin.getLogger().severe("bans 테이블 생성 실패: " + e.getMessage());
+        }
+    }
+
+    /** 뮤트(채팅금지) 테이블을 생성한다 */
+    private void createMutesTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "mutes ("
+                + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                + "player_uuid VARCHAR(36) NOT NULL, "
+                + "player_name VARCHAR(16) NOT NULL, "
+                + "reason TEXT NOT NULL, "
+                + "muted_by VARCHAR(16) NOT NULL, "
+                + "expires_at TIMESTAMP NULL, "
+                + "active TINYINT(1) DEFAULT 1, "
+                + "INDEX idx_player_uuid (player_uuid), "
+                + "INDEX idx_active (active)"
+                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception e) {
+            plugin.getLogger().severe("mutes 테이블 생성 실패: " + e.getMessage());
+        }
     }
 
     /** DB 커넥션을 반환한다 */
