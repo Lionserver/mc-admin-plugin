@@ -1,0 +1,27 @@
+# ============================================
+# AdminPlugin 플러그인 정보
+# ============================================
+name: AdminPlugin
+version: ${project.version}
+main: com.zehelper.adminplugin.AdminPlugin
+api-version: '1.21'
+description: 마인크래프트 플러그인
+author: zehelper
+
+# 명령어 등록
+commands:
+  # 유저 명령어
+  adminplugin:
+    description: "AdminPlugin 기본 명령어"
+    usage: "/adminplugin help"
+  # 관리자 명령어
+  adminplugin-admin:
+    description: "AdminPlugin 관리자 명령어"
+    usage: "/adminplugin-admin help"
+    permission: "adminplugin.admin"
+
+# 권한 등록
+permissions:
+  adminplugin.admin:
+    description: "AdminPlugin 관리자 권한"
+    default: op
